@@ -7,11 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @User
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property-read \Illuminate\Database\Eloquent\Collection<Role> $roles
  * @property-read \Illuminate\Database\Eloquent\Collection<Claim> $claims
  * @method static Builder role(Collection|array|string $role)
  */

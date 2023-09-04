@@ -14,9 +14,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ClaimController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
-        //
+        $claims = Claim::filter($request->get('filters', []))
+            ->sort($request->get('sort', 'id-desc'))
+            ->paginate($request->get('per_page', $this->per_page));
+
+        return ClaimResource::collection($claims, $request->get('with', []));
     }
 
     public function list(Request $request): AnonymousResourceCollection
@@ -54,7 +58,6 @@ class ClaimController extends Controller
         $claim->delete();
 
         return response()
-            ->noContent()
-            ->send();
+            ->noContent();
     }
 }

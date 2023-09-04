@@ -11,11 +11,10 @@ docker run --rm \
 
 ### Deployment in Docker
 ```
-- cp .env.example .env
-- alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
-- sail up -d --build
-- sail composer install
-- sail artisan key:generate
-- sail artisan jwt:generate
-- sail artisan migrate --seed
+cp .env.example .env
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+sail up -d --build
+sail artisan key:generate
+sail artisan jwt:secret
+sail artisan migrate --seed
 ```
