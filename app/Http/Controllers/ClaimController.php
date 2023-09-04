@@ -10,30 +10,40 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class ClaimController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $claims = Claim::filter($request->get('filters', []))
+        $appends = $request->get('with', []);
+
+        $claims = Claim::with($appends)
+            ->filter($request->get('filters', []))
             ->sort($request->get('sort', 'id-desc'))
             ->paginate($request->get('per_page', $this->per_page));
 
-        return ClaimResource::collection($claims, $request->get('with', []));
+        return ClaimResource::collection($claims, $appends);
     }
 
     public function list(Request $request): AnonymousResourceCollection
     {
+        $appends = $request->get('appends', []);
+
         /** @var User $user */
-        $user = Auth::user();
+        $user = Auth::user()
+            ->load(Arr::collapse([['claims'], $appends]));
 
         return ClaimResource::collection($user->claims);
     }
 
-    public function show(Claim $claim): ClaimResource
+    public function show(Request $request, Claim $claim): ClaimResource
     {
-        return ClaimResource::make($claim);
+        $appends = $request->get('with', []);
+
+        return ClaimResource::make($claim)
+            ->addAppends($appends);
     }
 
     public function store(ClaimStoreRequest $request): ClaimResource

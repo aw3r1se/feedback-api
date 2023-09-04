@@ -14,11 +14,14 @@ class AuthController extends Controller
 {
     public function me(Request $request): UserResource
     {
+        $appends = $request->get('with', []);
+
         /** @var User $user */
-        $user = Auth::user();
+        $user = Auth::user()
+            ->load($appends);
 
         return UserResource::make($user)
-            ->addAppends($request->get('appends', []));
+            ->addAppends($request->get('with', $appends));
     }
 
     public function login(Request $request): JsonResponse
